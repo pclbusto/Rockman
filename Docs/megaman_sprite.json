@@ -1,0 +1,12 @@
+{
+  "idle": {
+    "cantidad_sprites": 2,
+    "rectangulos": [[4,21,23,44], [29, 21, 48,44]],
+    "secuencia_animacion": [[60,0],[4,1],[140,0],[5,1]]
+  },
+  "running": {
+    "cantidad_sprites": 4,
+    "rectangulos": [[55, 21, 78, 44], [92, 21, 115, 44], [122, 21, 137, 44], [146, 21, 166, 44]],
+    "secuencia_animacion": [[8,1],[8,2],[8,3],[8,2]]
+  }
+}
