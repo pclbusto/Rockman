@@ -29,7 +29,8 @@ while running:
     #print(tiles_manager.tiles['cutman']['tiles'])
 
     #for index, tile in enumerate(tiles_manager.tiles['cutman']['tiles']):
-    screen.blit(stage_loader.image_map, (0,0))
+    screen.blit(stage_loader.image_map, (0, 0))
+    pygame.draw.rect(screen, (255, 0, 0), rockman.rect)
     screen.blit(rockman.image, rockman.pos)
     pygame.display.flip()
     mainClock.tick(60)

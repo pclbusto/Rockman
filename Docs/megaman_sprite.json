@@ -21,7 +21,7 @@
   },
    "jumping": {
     "cantidad_sprites": 1,
-    "rectangulos": [[177, 13, 192, 42 ]],
+    "rectangulos": [[177, 13, 202, 42 ]],
     "secuencia_animacion": [[1,0]],
     "reflejar": 1
 

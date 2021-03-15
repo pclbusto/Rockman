@@ -22,25 +22,32 @@ def collision_test(rect, tiles):
 
 
 def move(rect, movement, tiles):  # movement = [5,2]
-
+    tipo_coliciones = {'arriba': False, 'abajo': False, 'izquierda': False, 'derecha': False}
     rect.x += movement[0]
     collisions = collision_test(rect, tiles)
     for tile in collisions:
         if movement[0] > 0:
             rect.right = tile.left
+            tipo_coliciones['derecha'] = True
         if movement[0] < 0:
             rect.left = tile.right
+            tipo_coliciones['izquierda'] = True
+
     rect.y += movement[1]
     collisions = collision_test(rect, tiles)
     for tile in collisions:
         if movement[1] > 0:
             rect.bottom = tile.top
+            tipo_coliciones['abajo'] = True
+
             movement[1] = 0
         elif movement[1] < 0:
             rect.top = tile.bottom
             movement[1] = 0
+            tipo_coliciones['arriba'] = True
 
-    return rect, movement
+
+    return rect, movement, tipo_coliciones
 #
 #
 # right = False

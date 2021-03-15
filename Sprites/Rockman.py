@@ -66,14 +66,22 @@ class Rockman(pygame.sprite.Sprite):
         self.index_picture = 0
 
     def move(self, tiles):
-        print("entrada {}".format(self.rect))
+        # rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles)
+        # self.velocidad_x = velocidad[0]
+        # self.velocidad_y = velocidad[1]
+        # if not tipo_coliciones['abajo']:
+        #     self.change_state(self.ESTADO_JUMPING)
+        #     self.velocidad_y += self.GRAVITY
+        #     print("dsadsadsad")
+        # elif tipo_coliciones['abajo']:
+        #     self.change_state(self.ESTADO_IDLE)
+
+
         list_teclas = pygame.key.get_pressed()
-        self.velocidad_y += self.GRAVITY
         if list_teclas[pygame.K_LEFT] == 0 and list_teclas[pygame.K_RIGHT] == 0:
             if self.estado == self.ESTADO_RUNNING:
                 self.change_state(self.ESTADO_IDLE)
                 self.velocidad_x = 0
-
         if list_teclas[pygame.K_LEFT]:
             if self.velocidad_x > -self.VELOCIDAD_MAXIMA:
                 self.velocidad_x -= self.ACELERACION_X
@@ -101,28 +109,28 @@ class Rockman(pygame.sprite.Sprite):
                 self.change_state(self.ESTADO_IDLE)
         if list_teclas[pygame.K_a]:
             #saltamos
-            print("pulsada a")
             if self.estado in[self.ESTADO_RUNNING, self.ESTADO_IDLE]:
-                print("SALTANDO")
                 self.change_state(self.ESTADO_JUMPING)
                 self.velocidad_y = self.ACELERACION_Y
                 self.frames_salto = 0
             elif self.estado == self.ESTADO_JUMPING:
-                print("restamos")
                 self.frames_salto += 1
-
-        print(self.velocidad_y)
-        rect, velocidad = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles)
+        rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles)
         self.velocidad_x = velocidad[0]
         self.velocidad_y = velocidad[1]
+        if not tipo_coliciones['abajo']:
+            self.change_state(self.ESTADO_JUMPING)
+            self.velocidad_y += self.GRAVITY
+            print("dsadsadsad")
+        elif tipo_coliciones['abajo']:
+            self.change_state(self.ESTADO_IDLE)
         self.set_pos((rect.x, rect.y))
         self.update_image()
-        print("salida {}".format(self.rect))
-
 
 
     def set_pos(self, pos_nueva):
         self.pos = pos_nueva
+        # self.rect.center = self.image.get_rect().center
         self.rect.x = self.pos[0]
         self.rect.y = self.pos[1]
 
@@ -131,9 +139,9 @@ class Rockman(pygame.sprite.Sprite):
         self.image = self.sprites_dic[self.estado][self.sentido][self.sprites_dic[self.estado]['lista_secuencia'][self.index_picture]]
         self.index_picture += 1
         self.index_picture %= self.sprites_dic[self.estado]['cantiad_imagen']
-        self.rect = self.image.get_rect().copy()
-        self.rect.x = self.pos[0]
-        self.rect.y = self.pos[1]
+        self.rect.center = self.image.get_rect().center
+        # self.rect.x = self.pos[0]
+        # self.rect.y = self.pos[1]
 
 
 
