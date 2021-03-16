@@ -34,12 +34,14 @@ def move(rect, movement, tiles):  # movement = [5,2]
             tipo_coliciones['izquierda'] = True
 
     rect.y += movement[1]
+    print(rect, movement)
     collisions = collision_test(rect, tiles)
     for tile in collisions:
         if movement[1] > 0:
-            rect.bottom = tile.top
+            print("A {}".format( rect))
+            rect.bottom = tile.top + 3
+            print("D {}".format(rect))
             tipo_coliciones['abajo'] = True
-
             movement[1] = 0
         elif movement[1] < 0:
             rect.top = tile.bottom

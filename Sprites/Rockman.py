@@ -18,7 +18,7 @@ class Rockman(pygame.sprite.Sprite):
         self.VELOCIDAD_MAXIMA = 1.375 * self.size
         self.ACELERACION_Y = -4.87 * self.size
         self.ACELERACION_X = 0.125 * self.size
-        self.GRAVITY = 0.25 * self.size
+        self.GRAVITY = 0.005 * self.size
         self.ACELERACION_SALTO = 4.87
        # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
@@ -118,28 +118,32 @@ class Rockman(pygame.sprite.Sprite):
         rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles)
         self.velocidad_x = velocidad[0]
         self.velocidad_y = velocidad[1]
+        self.update_image()
+        # self.set_pos((rect.x, rect.y))
+        # print(rect)
         if not tipo_coliciones['abajo']:
+            print("Sin colision")
             self.change_state(self.ESTADO_JUMPING)
             self.velocidad_y += self.GRAVITY
-            print("dsadsadsad")
+            # print("dsadsadsad")
         elif tipo_coliciones['abajo']:
             self.change_state(self.ESTADO_IDLE)
-        self.set_pos((rect.x, rect.y))
-        self.update_image()
+            self.rect.bottom = rect.bottom
+            print(self.rect.bottom)
 
 
     def set_pos(self, pos_nueva):
         self.pos = pos_nueva
         # self.rect.center = self.image.get_rect().center
-        self.rect.x = self.pos[0]
-        self.rect.y = self.pos[1]
+        # self.rect.x = self.pos[0]
+        # self.rect.y = self.pos[1]
 
 
     def update_image(self):
         self.image = self.sprites_dic[self.estado][self.sentido][self.sprites_dic[self.estado]['lista_secuencia'][self.index_picture]]
         self.index_picture += 1
         self.index_picture %= self.sprites_dic[self.estado]['cantiad_imagen']
-        self.rect.center = self.image.get_rect().center
+        # self.rect = self.image.get_rect()
         # self.rect.x = self.pos[0]
         # self.rect.y = self.pos[1]
 
