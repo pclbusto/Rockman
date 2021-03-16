@@ -46,13 +46,13 @@ The position of the object has 8 bits of decimal part, but only the integer part
 Vertical motion
 Jump curve
 
-    In Rockman 1 and 2, when Rockman jumps, his Y speed is set to 04.DF.
+    In Rockman 1 and 2, when Rockman jumps, his Y speed is set to 04.DF = 4.87 decimal.
     In Rockman 3, when Rockman jumps, his Y speed is set to 04.A5.
     In Rockman 4, when Rockman jumps, his Y speed is set to 04.C0.
-    Every frame, 00.40 is subtracted from his Y speed (0.25 in decimal).
+    Every frame, 00.40 (0.25 decimal) is subtracted from his Y speed (0.25 in decimal).
     In Rockman 1 and 2, if the Y speed grows smaller than −0C.00 (−12 in decimal), it is set to −0C.00.
     In Rockman 3 and 4, if the Y speed grows smaller than −07.00, it is set to −07.00.
-    In Rockman 1 and 2, if the Y speed is larger than 02.1F and the player is not holding the A button, the speed is immediately set to 01.00.
+    In Rockman 1 and 2, if the Y speed is larger than 02.1F  (2.12 dec) and the player is not holding the A button, the speed is immediately set to 01.00.
     In Rockman 3 if [rules unknown and] the player is not holding the A button, the speed is immediately set to −00.80.
     In Rockman 4 if [rules unknown and] the player is not holding the A button, the speed is immediately set to −00.00.
 

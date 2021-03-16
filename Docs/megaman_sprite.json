@@ -25,5 +25,12 @@
     "secuencia_animacion": [[1,0]],
     "reflejar": 1
 
+  },
+  "falling": {
+    "cantidad_sprites": 1,
+    "rectangulos": [[177, 13, 202, 42 ]],
+    "secuencia_animacion": [[1,0]],
+    "reflejar": 1
+
   }
 }

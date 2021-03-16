@@ -10,16 +10,20 @@ class Rockman(pygame.sprite.Sprite):
     ESTADO_RUNNING = 'running'
     ESTADO_INCH = 'inch'
     ESTADO_JUMPING = 'jumping'
+    ESTADO_FALLING = 'falling'
 
     # Constructor. Pass in the color of the block,
     # and its x and y position
     def __init__(self):
         self.size = 3
         self.VELOCIDAD_MAXIMA = 1.375 * self.size
+        self.VELOCIDAD_CAIDA_MAXIMA_Y = 12
         self.ACELERACION_Y = -4.87 * self.size
         self.ACELERACION_X = 0.125 * self.size
-        self.GRAVITY = 0.005 * self.size
-        self.ACELERACION_SALTO = 4.87
+        self.GRAVITY = 0.25 * self.size
+        self.ACELERACION_SALTO = 4.87 * self.size
+        self.UMBRAL_SALTO = -2.12 * self.size
+
        # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         self.sprite_sheet = Sprite_Sheet()
@@ -36,6 +40,7 @@ class Rockman(pygame.sprite.Sprite):
         self.frames_salto = 0
         self.velocidad_x = 0
         self.velocidad_y = 0
+        self.tipo_coliciones = {'arriba': False, 'abajo': False, 'izquierda': False, 'derecha': False}
 
     def load_states(self, data):
         lista = []
@@ -66,18 +71,10 @@ class Rockman(pygame.sprite.Sprite):
         self.index_picture = 0
 
     def move(self, tiles):
-        # rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles)
-        # self.velocidad_x = velocidad[0]
-        # self.velocidad_y = velocidad[1]
-        # if not tipo_coliciones['abajo']:
-        #     self.change_state(self.ESTADO_JUMPING)
-        #     self.velocidad_y += self.GRAVITY
-        #     print("dsadsadsad")
-        # elif tipo_coliciones['abajo']:
-        #     self.change_state(self.ESTADO_IDLE)
 
 
         list_teclas = pygame.key.get_pressed()
+
         if list_teclas[pygame.K_LEFT] == 0 and list_teclas[pygame.K_RIGHT] == 0:
             if self.estado == self.ESTADO_RUNNING:
                 self.change_state(self.ESTADO_IDLE)
@@ -107,29 +104,43 @@ class Rockman(pygame.sprite.Sprite):
             if self.sentido != Rockman.SENTIDO_DERECHO:
                 self.sentido = Rockman.SENTIDO_DERECHO
                 self.change_state(self.ESTADO_IDLE)
+        print("letra a: {}".format(list_teclas[pygame.K_a]))
         if list_teclas[pygame.K_a]:
             #saltamos
             if self.estado in[self.ESTADO_RUNNING, self.ESTADO_IDLE]:
+                print("inicio salto")
                 self.change_state(self.ESTADO_JUMPING)
                 self.velocidad_y = self.ACELERACION_Y
-                self.frames_salto = 0
-            elif self.estado == self.ESTADO_JUMPING:
-                self.frames_salto += 1
-        rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles)
+                #self.frames_salto = 0
+            if self.estado == self.ESTADO_JUMPING:
+                self.velocidad_y += self.GRAVITY
+        if not list_teclas[pygame.K_a]:
+            print(self.estado)
+            if self.estado == self.ESTADO_JUMPING:
+                print("dejando de saltanr")
+                if self.velocidad_y < self.UMBRAL_SALTO:
+                    self.velocidad_y = -1*self.size
+                    self.change_state(self.ESTADO_FALLING)
+                else:
+                    self.velocidad_y += self.GRAVITY
+
+        if self.velocidad_y > 0:
+            print('cayendo por cambio de curva')
+            self.change_state(self.ESTADO_FALLING)
+
+        rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles, self.tipo_coliciones)
         self.velocidad_x = velocidad[0]
         self.velocidad_y = velocidad[1]
+        self.pos = (self.rect.x, self.rect.y)
         self.update_image()
-        # self.set_pos((rect.x, rect.y))
-        # print(rect)
-        if not tipo_coliciones['abajo']:
-            print("Sin colision")
-            self.change_state(self.ESTADO_JUMPING)
+        self.tipo_coliciones = tipo_coliciones
+        if not self.tipo_coliciones['abajo'] and self.estado != self.ESTADO_JUMPING:
+            self.change_state(self.ESTADO_FALLING)
             self.velocidad_y += self.GRAVITY
-            # print("dsadsadsad")
-        elif tipo_coliciones['abajo']:
-            self.change_state(self.ESTADO_IDLE)
-            self.rect.bottom = rect.bottom
-            print(self.rect.bottom)
+        elif self.tipo_coliciones['abajo']:
+            if self.estado == self.ESTADO_FALLING:
+                self.change_state(self.ESTADO_IDLE)
+                self.rect.bottom = rect.bottom+1
 
 
     def set_pos(self, pos_nueva):

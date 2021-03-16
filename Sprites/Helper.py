@@ -21,10 +21,12 @@ def collision_test(rect, tiles):
     return collisions
 
 
-def move(rect, movement, tiles):  # movement = [5,2]
-    tipo_coliciones = {'arriba': False, 'abajo': False, 'izquierda': False, 'derecha': False}
+def move(rect, movement, tiles, tipo_coliciones):
     rect.x += movement[0]
     collisions = collision_test(rect, tiles)
+    if not collisions:
+        tipo_coliciones['derecha'] = False
+        tipo_coliciones['izquierda'] = False
     for tile in collisions:
         if movement[0] > 0:
             rect.right = tile.left
@@ -32,23 +34,26 @@ def move(rect, movement, tiles):  # movement = [5,2]
         if movement[0] < 0:
             rect.left = tile.right
             tipo_coliciones['izquierda'] = True
-
     rect.y += movement[1]
-    print(rect, movement)
     collisions = collision_test(rect, tiles)
+    if tipo_coliciones['abajo'] and movement[0] != 0: #puede que se haya caido hay que ver si sigue en el piso
+        rect.y += 1  # bajamos uno para que podamos ver si esta sobre una plataforma
+        collisions = collision_test(rect, tiles)
+
+    if not collisions:
+        tipo_coliciones['arriba'] = False
+        tipo_coliciones['abajo'] = False
+
     for tile in collisions:
-        if movement[1] > 0:
-            print("A {}".format( rect))
-            rect.bottom = tile.top + 3
-            print("D {}".format(rect))
+        if movement[1] > 0: #esta bajando o cayendo detengo la caida y marco que colisiona abajo
+            rect.y -= 1
+            rect.bottom = tile.top
             tipo_coliciones['abajo'] = True
             movement[1] = 0
         elif movement[1] < 0:
             rect.top = tile.bottom
             movement[1] = 0
             tipo_coliciones['arriba'] = True
-
-
     return rect, movement, tipo_coliciones
 #
 #
