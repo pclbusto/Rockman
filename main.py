@@ -9,15 +9,18 @@ mainClock = pygame.time.Clock()
 
 # Run until the user asks to quit
 running = True
-
-
-rect = pygame.Rect(10,10,100,100)
-print(rect)
-rect.y += 1
-print(rect)
-rect.y -= 1
-print(rect)
 rockman = Rockman.Rockman()
+rect = pygame.Rect(10, 10, 100, 100)
+rect1 = pygame.Rect(15, 15, 100, 100)
+
+
+print(rect, rect1)
+rect.bottom = rect1.top
+print(rect, rect1)
+rect.normalize()
+print(rect, rect1)
+
+
 #tiles_manager = Tiles_Manager()
 stage_loader = Stage_Loader()
 while running:
@@ -29,7 +32,7 @@ while running:
         #if event.type in [pygame.KEYDOWN, pygame.KEYUP]:
          #   rockman.update_state(event)
 
-    rockman.move(stage_loader.tiles_rect)
+    # rockman.move(stage_loader.tiles_rect)
     # Fill the background with white
     screen.fill((0, 0, 0))
 

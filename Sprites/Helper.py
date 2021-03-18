@@ -30,23 +30,32 @@ def move(rect, movement, tiles, tipo_coliciones):
     for tile in collisions:
         if movement[0] > 0:
             rect.right = tile.left
+            print("por aca")
             tipo_coliciones['derecha'] = True
         if movement[0] < 0:
             rect.left = tile.right
             tipo_coliciones['izquierda'] = True
-    rect.y += movement[1]
-    collisions = collision_test(rect, tiles)
-    if tipo_coliciones['abajo'] and movement[0] != 0: #puede que se haya caido hay que ver si sigue en el piso
-        rect.y += 1  # bajamos uno para que podamos ver si esta sobre una plataforma
-        collisions = collision_test(rect, tiles)
 
+    mov_especial = False
+    if movement[1] < -1 or movement[1] > 1 :
+        rect.y += movement[1]
+    else:
+        mov_especial = True
+        rect.y += 1 #este movimiento es para saber si estamos parado sobre una plataforma
+
+    collisions = collision_test(rect, tiles)
     if not collisions:
+        # esta en el aire y no colisiona ni arriba o abajo
         tipo_coliciones['arriba'] = False
         tipo_coliciones['abajo'] = False
+        if mov_especial:
+            rect.y -= 1
+        return rect, movement, tipo_coliciones
 
     for tile in collisions:
         if movement[1] > 0: #esta bajando o cayendo detengo la caida y marco que colisiona abajo
             rect.y -= 1
+            print('aca', rect.bottom, tile.top)
             rect.bottom = tile.top
             tipo_coliciones['abajo'] = True
             movement[1] = 0

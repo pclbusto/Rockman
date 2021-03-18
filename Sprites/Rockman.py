@@ -104,20 +104,16 @@ class Rockman(pygame.sprite.Sprite):
             if self.sentido != Rockman.SENTIDO_DERECHO:
                 self.sentido = Rockman.SENTIDO_DERECHO
                 self.change_state(self.ESTADO_IDLE)
-        print("letra a: {}".format(list_teclas[pygame.K_a]))
         if list_teclas[pygame.K_a]:
             #saltamos
             if self.estado in[self.ESTADO_RUNNING, self.ESTADO_IDLE]:
-                print("inicio salto")
                 self.change_state(self.ESTADO_JUMPING)
                 self.velocidad_y = self.ACELERACION_Y
                 #self.frames_salto = 0
             if self.estado == self.ESTADO_JUMPING:
                 self.velocidad_y += self.GRAVITY
         if not list_teclas[pygame.K_a]:
-            print(self.estado)
             if self.estado == self.ESTADO_JUMPING:
-                print("dejando de saltanr")
                 if self.velocidad_y < self.UMBRAL_SALTO:
                     self.velocidad_y = -1*self.size
                     self.change_state(self.ESTADO_FALLING)
@@ -125,7 +121,7 @@ class Rockman(pygame.sprite.Sprite):
                     self.velocidad_y += self.GRAVITY
 
         if self.velocidad_y > 0:
-            print('cayendo por cambio de curva')
+            # print('cayendo por cambio de curva')
             self.change_state(self.ESTADO_FALLING)
 
         rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles, self.tipo_coliciones)
@@ -133,14 +129,14 @@ class Rockman(pygame.sprite.Sprite):
         self.velocidad_y = velocidad[1]
         self.pos = (self.rect.x, self.rect.y)
         self.update_image()
-        self.tipo_coliciones = tipo_coliciones
-        if not self.tipo_coliciones['abajo'] and self.estado != self.ESTADO_JUMPING:
+        #self.tipo_coliciones = tipo_coliciones
+        if not tipo_coliciones['abajo']:
             self.change_state(self.ESTADO_FALLING)
             self.velocidad_y += self.GRAVITY
-        elif self.tipo_coliciones['abajo']:
-            if self.estado == self.ESTADO_FALLING:
-                self.change_state(self.ESTADO_IDLE)
-                self.rect.bottom = rect.bottom+1
+        elif tipo_coliciones['abajo']:
+            self.change_state(self.ESTADO_IDLE)
+            print(self.rect, rect)
+            self.rect.bottom = rect.bottom
 
 
     def set_pos(self, pos_nueva):
