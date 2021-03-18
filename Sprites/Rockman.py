@@ -41,7 +41,7 @@ class Rockman(pygame.sprite.Sprite):
         self.velocidad_x = 0
         self.velocidad_y = 0
         self.tipo_coliciones = {'arriba': False, 'abajo': False, 'izquierda': False, 'derecha': False}
-
+        self.jump_pressed = (False, False)
     def load_states(self, data):
         lista = []
         for k, v in data.items():
@@ -90,7 +90,8 @@ class Rockman(pygame.sprite.Sprite):
                     self.change_state(self.ESTADO_RUNNING)
             if self.sentido != Rockman.SENTIDO_IZQUIERDO:
                 self.sentido = Rockman.SENTIDO_IZQUIERDO
-                self.change_state(self.ESTADO_IDLE)
+                if self.estado == self.ESTADO_RUNNING or self.ESTADO_IDLE == self.ESTADO_INCH:
+                    self.change_state(self.ESTADO_IDLE)
         if list_teclas[pygame.K_RIGHT]:
             if self.velocidad_x < self.VELOCIDAD_MAXIMA:
                 self.velocidad_x += self.ACELERACION_X
@@ -103,16 +104,19 @@ class Rockman(pygame.sprite.Sprite):
                     self.change_state(self.ESTADO_RUNNING)
             if self.sentido != Rockman.SENTIDO_DERECHO:
                 self.sentido = Rockman.SENTIDO_DERECHO
-                self.change_state(self.ESTADO_IDLE)
+                if self.estado == self.ESTADO_RUNNING or self.ESTADO_IDLE == self.ESTADO_INCH:
+                    self.change_state(self.ESTADO_IDLE)
         if list_teclas[pygame.K_a]:
             #saltamos
-            if self.estado in[self.ESTADO_RUNNING, self.ESTADO_IDLE]:
-                self.change_state(self.ESTADO_JUMPING)
-                self.velocidad_y = self.ACELERACION_Y
-                #self.frames_salto = 0
+            if not self.jump_pressed[0] and not self.jump_pressed[1]:
+                if self.estado in[self.ESTADO_RUNNING, self.ESTADO_IDLE]:
+                    self.change_state(self.ESTADO_JUMPING)
+                    self.velocidad_y = self.ACELERACION_Y
+                    self.jump_pressed = (True, True)
             if self.estado == self.ESTADO_JUMPING:
                 self.velocidad_y += self.GRAVITY
         if not list_teclas[pygame.K_a]:
+            self.jump_pressed = (self.jump_pressed[0], False)
             if self.estado == self.ESTADO_JUMPING:
                 if self.velocidad_y < self.UMBRAL_SALTO:
                     self.velocidad_y = -1*self.size
@@ -133,10 +137,15 @@ class Rockman(pygame.sprite.Sprite):
         if not tipo_coliciones['abajo']:
             self.change_state(self.ESTADO_FALLING)
             self.velocidad_y += self.GRAVITY
-        elif tipo_coliciones['abajo']:
+        if tipo_coliciones['abajo']:
+            if self.estado != self.ESTADO_RUNNING:
+                self.change_state(self.ESTADO_RUNNING)
+            self.rect = rect
+            self.jump_pressed = (False, self.jump_pressed[1])
+        if tipo_coliciones['derecha'] or tipo_coliciones['izquierda']:
             self.change_state(self.ESTADO_IDLE)
-            print(self.rect, rect)
-            self.rect.bottom = rect.bottom
+            self.rect = rect
+            print("vel {}".format(self.velocidad_x))
 
 
     def set_pos(self, pos_nueva):
