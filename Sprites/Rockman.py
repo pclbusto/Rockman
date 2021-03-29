@@ -11,6 +11,7 @@ class Rockman(pygame.sprite.Sprite):
     ESTADO_INCH = 'inch'
     ESTADO_JUMPING = 'jumping'
     ESTADO_FALLING = 'falling'
+    ESTADO_CLIMBING = 'climbing'
 
     # Constructor. Pass in the color of the block,
     # and its x and y position
@@ -23,6 +24,7 @@ class Rockman(pygame.sprite.Sprite):
         self.GRAVITY = 0.25 * self.size
         self.ACELERACION_SALTO = 4.87 * self.size
         self.UMBRAL_SALTO = -2.12 * self.size
+        self.CLIMBING_SPEED = 0.75 * self.size
 
        # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
@@ -42,6 +44,7 @@ class Rockman(pygame.sprite.Sprite):
         self.velocidad_y = 0
         self.tipo_coliciones = {'arriba': False, 'abajo': False, 'izquierda': False, 'derecha': False}
         self.jump_pressed = (False, False)
+
     def load_states(self, data):
         lista = []
         for k, v in data.items():
@@ -65,7 +68,7 @@ class Rockman(pygame.sprite.Sprite):
         cantiad_imagen = len(secuencia)
         reflejar = data['reflejar'] == 1
         self.sprites_dic[key] = {self.SENTIDO_IZQUIERDO: lista_izquierda, self.SENTIDO_DERECHO: lista_derecha, 'lista_secuencia': secuencia, 'cantiad_imagen' : cantiad_imagen, 'reflejar':reflejar}
-
+        print(key, self.sprites_dic[key])
     def change_state(self, new_state):
         self.estado = new_state
         self.index_picture = 0
@@ -109,12 +112,12 @@ class Rockman(pygame.sprite.Sprite):
         if list_teclas[pygame.K_a]:
             #saltamos
             if not self.jump_pressed[0] and not self.jump_pressed[1]:
-                if self.estado in[self.ESTADO_RUNNING, self.ESTADO_IDLE]:
+                if self.estado in [self.ESTADO_RUNNING, self.ESTADO_IDLE]:
                     self.change_state(self.ESTADO_JUMPING)
                     self.velocidad_y = self.ACELERACION_Y
                     self.jump_pressed = (True, True)
-            if self.estado == self.ESTADO_JUMPING:
-                self.velocidad_y += self.GRAVITY
+            #if self.estado == self.ESTADO_JUMPING:
+                    self.velocidad_y += self.GRAVITY
         if not list_teclas[pygame.K_a]:
             self.jump_pressed = (self.jump_pressed[0], False)
             if self.estado == self.ESTADO_JUMPING:
@@ -123,10 +126,14 @@ class Rockman(pygame.sprite.Sprite):
                     self.change_state(self.ESTADO_FALLING)
                 else:
                     self.velocidad_y += self.GRAVITY
+        if list_teclas[pygame.K_UP]:
+            self.velocidad_y = self.CLIMBING_SPEED
+            self.change_state(self.ESTADO_CLIMBING)
 
         if self.velocidad_y > 0:
-            # print('cayendo por cambio de curva')
-            self.change_state(self.ESTADO_FALLING)
+            if self.estado != self.ESTADO_CLIMBING:
+                # print('cayendo por cambio de curva')
+                self.change_state(self.ESTADO_FALLING)
 
         rect, velocidad, tipo_coliciones = move(self.rect, [self.velocidad_x, self.velocidad_y], tiles, self.tipo_coliciones)
         self.velocidad_x = velocidad[0]
@@ -142,10 +149,11 @@ class Rockman(pygame.sprite.Sprite):
                 self.change_state(self.ESTADO_RUNNING)
             self.rect = rect
             self.jump_pressed = (False, self.jump_pressed[1])
+            print("coliciones {}".format(self.tipo_coliciones))
+
         if tipo_coliciones['derecha'] or tipo_coliciones['izquierda']:
-            self.change_state(self.ESTADO_IDLE)
+            #self.change_state(self.ESTADO_IDLE)
             self.rect = rect
-            print("vel {}".format(self.velocidad_x))
 
 
     def set_pos(self, pos_nueva):

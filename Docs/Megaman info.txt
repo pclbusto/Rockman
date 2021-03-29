@@ -83,7 +83,7 @@ Magical Y coordinates
 
 Climbing
 
-    In Rockman 1 and 2, Rockman climbs at speed of 00.C0.
+    In Rockman 1 and 2, Rockman climbs at speed of 00.C0 = 0.75 decimal.
     In Rockman 3, Rockman climbs at speed of 01.4C.
 
 Transforming

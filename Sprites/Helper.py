@@ -1,4 +1,4 @@
-import pygame, sys
+from  Stage.Stage_Loader  import Rectangulo
 #
 # # setup pygame/window #
 # mainClock = pygame.time.Clock()
@@ -28,22 +28,23 @@ def move(rect, movement, tiles, tipo_coliciones):
         tipo_coliciones['derecha'] = False
         tipo_coliciones['izquierda'] = False
     for tile in collisions:
-        if movement[0] > 0:
-            rect.right = tile.left
-            print("por aca")
-            tipo_coliciones['derecha'] = True
-        if movement[0] < 0:
-            rect.left = tile.right
-            tipo_coliciones['izquierda'] = True
+        if tile.tipo == Rectangulo.TIPO_PISO:
+            if movement[0] > 0:
+                rect.right = tile.left
+                print("por aca x")
+                tipo_coliciones['derecha'] = True
+            if movement[0] < 0:
+                rect.left = tile.right
+                tipo_coliciones['izquierda'] = True
 
     mov_especial = False
-    if movement[1] < -1 or movement[1] > 1 :
+    if movement[1] < -1 or movement[1] > 1:
         rect.y += movement[1]
     else:
         mov_especial = True
         movement[1] += 1
         rect.y += movement[1] #este movimiento es para saber si estamos parado sobre una plataforma
-    print("Especia : {}".format(mov_especial))
+    #print("Especia : {}".format(mov_especial))
     collisions = collision_test(rect, tiles)
     if not collisions:
         # esta en el aire y no colisiona ni arriba o abajo
@@ -55,15 +56,20 @@ def move(rect, movement, tiles, tipo_coliciones):
         return rect, movement, tipo_coliciones
 
     for tile in collisions:
-        if movement[1] > 0: #esta bajando o cayendo detengo la caida y marco que colisiona abajo
-            rect.y -= 1
-            rect.bottom = tile.top
-            tipo_coliciones['abajo'] = True
-            movement[1] = 0
-        elif movement[1] < 0:
-            rect.top = tile.bottom
-            movement[1] = 0
-            tipo_coliciones['arriba'] = True
+        if tile.tipo == Rectangulo.TIPO_PISO:
+            if movement[1] > 0: #esta bajando o cayendo detengo la caida y marco que colisiona abajo
+                rect.y -= 1
+                rect.bottom = tile.top
+                tipo_coliciones['abajo'] = True
+                movement[1] = 0
+            elif movement[1] < 0:
+                rect.top = tile.bottom
+                movement[1] = 0
+                tipo_coliciones['arriba'] = True
+                print("aca esta el drama")
+        elif tile.tipo == Rectangulo.TIPO_ESCALERA:
+            tipo_coliciones['abajo'] = False
+            tipo_coliciones['arriba'] = False
     return rect, movement, tipo_coliciones
 #
 #

@@ -32,5 +32,12 @@
     "secuencia_animacion": [[1,0]],
     "reflejar": 1
 
+  },
+  "climbing": {
+    "cantidad_sprites": 3,
+    "rectangulos": [[211, 13, 226, 41], [228, 13, 243, 41], [245, 21, 260, 42]],
+    "secuencia_animacion": [[1,0], [1,1]],
+    "reflejar": 0
+
   }
 }
