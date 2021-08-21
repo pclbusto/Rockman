@@ -69,6 +69,7 @@ class Rockman(pygame.sprite.Sprite):
         reflejar = data['reflejar'] == 1
         self.sprites_dic[key] = {self.SENTIDO_IZQUIERDO: lista_izquierda, self.SENTIDO_DERECHO: lista_derecha, 'lista_secuencia': secuencia, 'cantiad_imagen' : cantiad_imagen, 'reflejar':reflejar}
         print(key, self.sprites_dic[key])
+
     def change_state(self, new_state):
         self.estado = new_state
         self.index_picture = 0
@@ -116,7 +117,6 @@ class Rockman(pygame.sprite.Sprite):
                     self.change_state(self.ESTADO_JUMPING)
                     self.velocidad_y = self.ACELERACION_Y
                     self.jump_pressed = (True, True)
-            #if self.estado == self.ESTADO_JUMPING:
                     self.velocidad_y += self.GRAVITY
         if not list_teclas[pygame.K_a]:
             self.jump_pressed = (self.jump_pressed[0], False)

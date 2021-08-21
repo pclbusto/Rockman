@@ -21,7 +21,7 @@ def collision_test(rect, tiles):
     return collisions
 
 
-def move(rect, movement, tiles, tipo_coliciones):
+def     move(rect, movement, tiles, tipo_coliciones):
     rect.x += movement[0]
     collisions = collision_test(rect, tiles)
     if not collisions:
